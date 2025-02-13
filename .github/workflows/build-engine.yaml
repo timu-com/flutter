@@ -11,6 +11,11 @@ jobs:
   build-engine:
     runs-on: flutter-linux64-runner
     steps:
+
+      - name: Set Actions Allow Unsecure Commands
+        run: |
+          echo "ACTIONS_ALLOW_UNSECURE_COMMANDS=true" >> $GITHUB_ENV
+
       - name: Check out the repository
         uses: actions/checkout@v3
 
