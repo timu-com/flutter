@@ -1,320 +1,48 @@
-name: Build Flutter Engine (Monorepo)
+name: Build Flutter Engine with Engine Tool
 
 on:
+  # Run on push or pull requests, modify to your needs.
   push:
     branches: [ "main", "engine-builds" ]
   pull_request:
     branches: [ "main", "engine-builds" ]
 
 jobs:
-
-  # -------------------------------------------------------------------
-  # 1) Build on Linux
-  # -------------------------------------------------------------------
-  build-linux:
-    name: Build Engine on Linux
-    runs-on:  flutter-linux64-runner
-    strategy:
-      matrix:
-        build_mode: [debug, profile, release]
+  build-engine:
+    runs-on: ubuntu-latest-large
     steps:
-      - name: Set Actions Allow Unsecure Commands
-        run: |
-          echo "ACTIONS_ALLOW_UNSECURE_COMMANDS=true" >> $GITHUB_ENV
-      - name: Check out Flutter repo
+      - name: Check out the repository
         uses: actions/checkout@v3
-        with:
-          # If your repo still uses submodules, you may need this:
-          # submodules: true
-          # fetch-depth: 0 (if you need full history)
-          fetch-depth: 0
-
-      - name:
-        run: |
-          cp engine/scripts/standard.gclient engine/.gclient
 
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y curl python3 python3-pip python3-setuptools git clang cmake ninja-build pkg-config
+          # Typical dependencies for building the engine on Linux:
+          sudo apt-get install --no-install-recommends -y \
+            clang \
+            cmake \
+            ninja-build \
+            python3 \
+            unzip \
+            zip \
+            xz-utils \
+            libgtk-3-dev \
+            libglu-dev
 
-          # Clone depot_tools to get gclient, gn, ninja, etc.
-          git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git $HOME/depot_tools
-          echo "::add-path::$HOME/depot_tools"
-
-      - name: Sync dependencies (gclient sync)
-        working-directory: engine
+      - name: Fetch engine dependencies
         run: |
-          # Run gclient sync from within the engine folder
-          gclient sync
+          # If your engine checkout is in `./src`, navigate there first:
+          cd engine/src
+          ./flutter/tools/engine_tool/bin/et fetch
 
-      - name: Generate GN build files
-        working-directory: engine
+      - name: Build host_debug engine
         run: |
-          # We'll name our build output directory based on mode + platform
-          gn gen out/linux_${{ matrix.build_mode }} \
-            --args="is_debug=${{ matrix.build_mode == 'debug' }} \
-                    is_profile=${{ matrix.build_mode == 'profile' }} \
-                    target_os=\"linux\""
+          cd engine/src
+          # Example: build a host_debug engine for the local OS (Linux x64).
+          ./flutter/tools/engine_tool/bin/et build --config host_debug
 
-      - name: Build flutter engine
-        working-directory: engine
+      # Optionally: run a sample C++ test target
+      - name: Run C++ unit tests
         run: |
-          ninja -C out/linux_${{ matrix.build_mode }} flutter
-
-
-  # -------------------------------------------------------------------
-  # 2) Build on Windows
-  # -------------------------------------------------------------------
-  build-windows:
-    name: Build Engine on Windows
-    runs-on: windows-latest-large
-    strategy:
-      matrix:
-        build_mode: [debug, profile, release]
-    steps:
-      - name: Set Actions Allow Unsecure Commands
-        run: |
-          echo "ACTIONS_ALLOW_UNSECURE_COMMANDS=true" >> $GITHUB_ENV
-      - name: Check out Flutter repo
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-
-      - name:
-        run: |
-          cp engine/scripts/standard.gclient engine/.gclient
-
-      - name: Install dependencies
-        run: |
-          choco install python --version=3.9.0 -y
-          choco install visualstudio2022buildtools -y
-          choco install cmake ninja git -y
-
-          # Set up depot_tools
-          git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git C:\depot_tools
-          echo "C:\\depot_tools" >> $env:GITHUB_PATH
-
-      - name: Sync dependencies (gclient sync)
-        run: |
-          cd engine
-          gclient sync
-
-      - name: Generate GN build files
-        run: |
-          cd engine
-          gn gen out\windows_${{ matrix.build_mode }} --args="is_debug=${{ matrix.build_mode == 'debug' }} is_profile=${{ matrix.build_mode == 'profile' }} target_os=\"win\""
-
-      - name: Build flutter engine
-        run: |
-          cd engine
-          ninja -C out\windows_${{ matrix.build_mode }} flutter
-
-
-  # -------------------------------------------------------------------
-  # 3) Build on macOS (and optionally iOS)
-  # -------------------------------------------------------------------
-  build-macos:
-    name: Build Engine on macOS
-    runs-on: macos-latest-large
-    strategy:
-      matrix:
-        build_mode: [debug, profile, release]
-    steps:
-      - name: Set Actions Allow Unsecure Commands
-        run: |
-          echo "ACTIONS_ALLOW_UNSECURE_COMMANDS=true" >> $GITHUB_ENV
-
-      - name: Check out Flutter repo
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-
-      - name:
-        run: |
-          cp engine/scripts/standard.gclient engine/.gclient
-
-      - name: Install dependencies
-        run: |
-          brew update
-          brew install python git ninja cmake
-
-          # depot_tools
-          git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git $HOME/depot_tools
-          echo "::add-path::$HOME/depot_tools"
-
-      - name: Sync dependencies (gclient sync)
-        working-directory: engine
-        run: |
-          gclient sync
-
-      - name: Generate GN build files
-        working-directory: engine
-        run: |
-          gn gen out/mac_${{ matrix.build_mode }} \
-            --args="is_debug=${{ matrix.build_mode == 'debug' }} \
-                    is_profile=${{ matrix.build_mode == 'profile' }} \
-                    target_os=\"mac\""
-
-      - name: Build flutter engine
-        working-directory: engine
-        run: |
-          ninja -C out/mac_${{ matrix.build_mode }} flutter
-
-
-  # -------------------------------------------------------------------
-  # (Optional) Build iOS
-  # -------------------------------------------------------------------
-  build-ios:
-    name: Build Engine on iOS
-    runs-on: macos-latest-large
-    strategy:
-      matrix:
-        build_mode: [debug, profile, release]
-    steps:
-      - name: Set Actions Allow Unsecure Commands
-        run: |
-          echo "ACTIONS_ALLOW_UNSECURE_COMMANDS=true" >> $GITHUB_ENV
-
-      - name: Check out Flutter repo
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-
-      - name:
-        run: |
-          cp engine/scripts/standard.gclient engine/.gclient
-
-      - name: Install dependencies
-        run: |
-          brew update
-          brew install python git ninja cmake
-
-          # depot_tools
-          git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git $HOME/depot_tools
-          echo "::add-path::$HOME/depot_tools"
-
-      - name: Sync dependencies (gclient sync)
-        working-directory: engine
-        run: |
-          gclient sync
-
-      - name: Generate GN build files
-        working-directory: engine
-        run: |
-          # Customize for iOS device vs iOS simulator as needed
-          gn gen out/ios_${{ matrix.build_mode }} \
-            --args="is_debug=${{ matrix.build_mode == 'debug' }} \
-                    is_profile=${{ matrix.build_mode == 'profile' }} \
-                    target_os=\"ios\""
-
-      - name: Build flutter engine
-        working-directory: engine
-        run: |
-          ninja -C out/ios_${{ matrix.build_mode }} flutter
-
-
-  # -------------------------------------------------------------------
-  # (Optional) Build Android
-  # -------------------------------------------------------------------
-  build-android:
-    name: Build Engine on Android
-    runs-on:  flutter-linux64-runner
-    strategy:
-      matrix:
-        build_mode: [debug, profile, release]
-    steps:
-      - name: Set Actions Allow Unsecure Commands
-        run: |
-          echo "ACTIONS_ALLOW_UNSECURE_COMMANDS=true" >> $GITHUB_ENV
-
-      - name: Check out Flutter repo
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-
-      - name:
-        run: |
-          cp engine/scripts/standard.gclient engine/.gclient
-
-      - name: Install dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y curl python3 python3-pip python3-setuptools git clang cmake ninja-build pkg-config default-jdk
-
-          # Android SDK/NDK setup if needed
-          # e.g., install a specific NDK version, set environment variables, etc.
-
-          # depot_tools
-          git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git $HOME/depot_tools
-          echo "::add-path::$HOME/depot_tools"
-
-      - name: Sync dependencies (gclient sync)
-        working-directory: engine
-        run: |
-          gclient sync
-
-      - name: Generate GN build files
-        working-directory: engine
-        run: |
-          gn gen out/android_${{ matrix.build_mode }} \
-            --args="is_debug=${{ matrix.build_mode == 'debug' }} \
-                    is_profile=${{ matrix.build_mode == 'profile' }} \
-                    target_os=\"android\""
-
-      - name: Build flutter engine
-        working-directory: engine
-        run: |
-          ninja -C out/android_${{ matrix.build_mode }} flutter
-
-
-  # -------------------------------------------------------------------
-  # (Optional) Build Web (WASM target)
-  # -------------------------------------------------------------------
-  build-web:
-    name: Build Engine on Web
-    runs-on:  flutter-linux64-runner
-    strategy:
-      matrix:
-        build_mode: [debug, profile, release]
-    steps:
-
-      - name: Set Actions Allow Unsecure Commands
-        run: |
-          echo "ACTIONS_ALLOW_UNSECURE_COMMANDS=true" >> $GITHUB_ENV
-
-      - name: Check out Flutter repo
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-
-      - name:
-        run: |
-          cp engine/scripts/standard.gclient engine/.gclient
-
-      - name: Install dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y curl python3 python3-pip python3-setuptools git clang cmake ninja-build pkg-config
-
-          # depot_tools
-          git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git $HOME/depot_tools
-          echo "::add-path::$HOME/depot_tools"
-
-      - name: Sync dependencies (gclient sync)
-        working-directory: engine
-        run: |
-          gclient sync
-
-      - name: Generate GN build files
-        working-directory: engine
-        run: |
-          gn gen out/web_${{ matrix.build_mode }} \
-            --args="is_debug=${{ matrix.build_mode == 'debug' }} \
-                    is_profile=${{ matrix.build_mode == 'profile' }} \
-                    target_os=\"wasm\""
-
-      - name: Build flutter engine
-        working-directory: engine
-        run: |
-          ninja -C out/web_${{ matrix.build_mode }} flutter
+          cd engine/src
+          ./flutter/tools/engine_tool/bin/et test //flutter/impeller:impeller_unittests
