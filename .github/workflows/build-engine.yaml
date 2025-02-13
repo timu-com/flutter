@@ -31,7 +31,7 @@ jobs:
 
       - name:
         run: |
-          cp engine/scripts/standard.gclient .gclient
+          cp engine/scripts/standard.gclient engine/.gclient
 
       - name: Install dependencies
         run: |
@@ -83,7 +83,7 @@ jobs:
 
       - name:
         run: |
-          cp engine/scripts/standard.gclient .gclient
+          cp engine/scripts/standard.gclient engine/.gclient
 
       - name: Install dependencies
         run: |
@@ -116,7 +116,7 @@ jobs:
   # -------------------------------------------------------------------
   build-macos:
     name: Build Engine on macOS
-    runs-on: macos-latest
+    runs-on: macos-latest-large
     strategy:
       matrix:
         build_mode: [debug, profile, release]
@@ -132,7 +132,7 @@ jobs:
 
       - name:
         run: |
-          cp engine/scripts/standard.gclient .gclient
+          cp engine/scripts/standard.gclient engine/.gclient
 
       - name: Install dependencies
         run: |
@@ -167,7 +167,7 @@ jobs:
   # -------------------------------------------------------------------
   build-ios:
     name: Build Engine on iOS
-    runs-on: macos-latest
+    runs-on: macos-latest-large
     strategy:
       matrix:
         build_mode: [debug, profile, release]
@@ -183,7 +183,7 @@ jobs:
 
       - name:
         run: |
-          cp engine/scripts/standard.gclient .gclient
+          cp engine/scripts/standard.gclient engine/.gclient
 
       - name: Install dependencies
         run: |
@@ -235,7 +235,7 @@ jobs:
 
       - name:
         run: |
-          cp engine/scripts/standard.gclient .gclient
+          cp engine/scripts/standard.gclient engine/.gclient
 
       - name: Install dependencies
         run: |
@@ -290,7 +290,7 @@ jobs:
 
       - name:
         run: |
-          cp engine/scripts/standard.gclient .gclient
+          cp engine/scripts/standard.gclient engine/.gclient
 
       - name: Install dependencies
         run: |
