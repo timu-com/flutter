@@ -29,11 +29,22 @@ jobs:
             libgtk-3-dev \
             libglu-dev
 
+      - name: Gclient sync
+        run: |
+          sudo apt-get install -y curl python3 python3-pip python3-setuptools git clang cmake ninja-build pkg-config
+
+          # Clone depot_tools to get gclient, gn, ninja, etc.
+          git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git $HOME/depot_tools
+          echo "::add-path::$HOME/depot_tools"
+
+          cp engine/scripts/standard.gclient .gclient
+          gclient sync
+
       - name: Fetch engine dependencies
         run: |
           # If your engine checkout is in `./src`, navigate there first:
           cd engine/src
-          ./flutter/tools/engine_tool/bin/et fetch
+          .cd /bin/et fetch
 
       - name: Build host_debug engine
         run: |
