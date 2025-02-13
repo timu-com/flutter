@@ -31,7 +31,7 @@ jobs:
 
       - name:
         run: |
-          cp engine/scripts/rbe.gclient .gclient
+          cp engine/scripts/standard.gclient .gclient
 
       - name: Install dependencies
         run: |
@@ -83,7 +83,7 @@ jobs:
 
       - name:
         run: |
-          cp engine/scripts/rbe.gclient .gclient
+          cp engine/scripts/standard.gclient .gclient
 
       - name: Install dependencies
         run: |
@@ -132,7 +132,7 @@ jobs:
 
       - name:
         run: |
-          cp engine/scripts/rbe.gclient .gclient
+          cp engine/scripts/standard.gclient .gclient
 
       - name: Install dependencies
         run: |
@@ -183,7 +183,7 @@ jobs:
 
       - name:
         run: |
-          cp engine/scripts/rbe.gclient .gclient
+          cp engine/scripts/standard.gclient .gclient
 
       - name: Install dependencies
         run: |
@@ -235,7 +235,7 @@ jobs:
 
       - name:
         run: |
-          cp engine/scripts/rbe.gclient .gclient
+          cp engine/scripts/standard.gclient .gclient
 
       - name: Install dependencies
         run: |
@@ -290,7 +290,7 @@ jobs:
 
       - name:
         run: |
-          cp engine/scripts/rbe.gclient .gclient
+          cp engine/scripts/standard.gclient .gclient
 
       - name: Install dependencies
         run: |
