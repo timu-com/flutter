@@ -9,7 +9,7 @@ on:
 
 jobs:
   build-engine:
-    runs-on: ubuntu-latest-large
+    runs-on: flutter-linux64-runner
     steps:
       - name: Check out the repository
         uses: actions/checkout@v3
@@ -33,13 +33,13 @@ jobs:
         run: |
           # If your engine checkout is in `./src`, navigate there first:
           cd engine/src
-          ./flutter/tools/engine_tool/bin/et fetch
+          et fetch
 
       - name: Build host_debug engine
         run: |
           cd engine/src
           # Example: build a host_debug engine for the local OS (Linux x64).
-          ./flutter/tools/engine_tool/bin/et build --config host_debug
+          et build --config host_debug
 
       # Optionally: run a sample C++ test target
       - name: Run C++ unit tests
