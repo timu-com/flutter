@@ -13,7 +13,7 @@ jobs:
   # -------------------------------------------------------------------
   build-linux:
     name: Build Engine on Linux
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest-large
     strategy:
       matrix:
         build_mode: [debug, profile, release]
@@ -68,7 +68,7 @@ jobs:
   # -------------------------------------------------------------------
   build-windows:
     name: Build Engine on Windows
-    runs-on: windows-latest
+    runs-on: windows-latest-large
     strategy:
       matrix:
         build_mode: [debug, profile, release]
@@ -219,7 +219,7 @@ jobs:
   # -------------------------------------------------------------------
   build-android:
     name: Build Engine on Android
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest-large
     strategy:
       matrix:
         build_mode: [debug, profile, release]
@@ -273,7 +273,7 @@ jobs:
   # -------------------------------------------------------------------
   build-web:
     name: Build Engine on Web
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest-large
     strategy:
       matrix:
         build_mode: [debug, profile, release]
