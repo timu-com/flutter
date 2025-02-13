@@ -15,7 +15,6 @@ jobs:
     name: Build Engine on Linux
     runs-on:
       group: large-runners
-      labels: ubuntu-latest-large
     strategy:
       matrix:
         build_mode: [debug, profile, release]
