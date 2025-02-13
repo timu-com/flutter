@@ -38,22 +38,22 @@ jobs:
           echo "::add-path::$HOME/depot_tools"
 
           cp engine/scripts/standard.gclient .gclient
-          gclient sync
+          gclient sync -D
 
       - name: Fetch engine dependencies
         run: |
           # If your engine checkout is in `./src`, navigate there first:
           cd engine/src
-          .cd /bin/et fetch
+          ./flutter/bin/et fetch
 
       - name: Build host_debug engine
         run: |
           cd engine/src
           # Example: build a host_debug engine for the local OS (Linux x64).
-          et build --config host_debug
+          ./flutter/bin/et build --config host_debug
 
       # Optionally: run a sample C++ test target
       - name: Run C++ unit tests
         run: |
           cd engine/src
-          ./flutter/tools/engine_tool/bin/et test //flutter/impeller:impeller_unittests
+           ./flutter/bin/et test //flutter/impeller:impeller_unittests
