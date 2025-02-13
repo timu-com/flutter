@@ -33,7 +33,7 @@ jobs:
         run: |
           # If your engine checkout is in `./src`, navigate there first:
           cd engine/src
-          et fetch
+          ./flutter/tools/engine_tool/bin/et fetch
 
       - name: Build host_debug engine
         run: |
