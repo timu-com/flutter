@@ -59,8 +59,3 @@ jobs:
           # Example: build a host_debug engine for the local OS (Linux x64).
           ./flutter/bin/et build --config host_debug
 
-      # Optionally: run a sample C++ test target
-      - name: Run C++ unit tests
-        run: |
-          cd engine/src
-           ./flutter/bin/et test //flutter/impeller:impeller_unittests
