@@ -42,6 +42,8 @@ jobs:
           git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git $HOME/depot_tools
           echo "::add-path::$HOME/depot_tools"
 
+      - name: Sync dependencies (gclient sync)
+        run: |
           cp engine/scripts/standard.gclient .gclient
           gclient sync -D
 
