@@ -17,17 +17,18 @@ jobs:
       matrix:
         include:
           # ------------------------- LINUX BUILDS -------------------------
+          # host_debug, host_debug_unopt, host_profile, host_release, wasm_debug_unopt, wasm_release,
 
-          - name: Linux linux_host_desktop_engine
-            config_name: linux_host_desktop_engine
+          - name: Linux host release
+            config_name: host_release
             os: ubuntu-latest
 
-          - name: Linux linux_android_aot_engine
-            config_name: linux_android_aot_engine
+          - name: Linux wasm release (web)
+            config_name: wasm_release
             os: ubuntu-latest
 
-          - name: Linux linux_web_engine
-            config_name: linux_web_engine
+          - name: Android release
+            config_name: android_release_arm64
             os: ubuntu-latest
 
 
@@ -78,7 +79,7 @@ jobs:
           echo "$HOME/depot_tools" >> $GITHUB_PATH
 
       - name: Gclient Sync
-        if: startsWith(matrix.os, 'ubuntu') && contains(matrix.config_name, 'web')
+        if: startsWith(matrix.os, 'ubuntu') && contains(matrix.config_name, 'wasm')
         run: |
           # Use custom gclient to trim size
           cp engine/scripts/slim-linux-web.gclient .gclient
@@ -92,7 +93,7 @@ jobs:
           gclient sync -D
 
       - name: Gclient Sync
-        if: startsWith(matrix.os, 'ubuntu') && contains(matrix.config_name, 'desktop')
+        if: startsWith(matrix.os, 'ubuntu') && contains(matrix.config_name, 'host')
         run: |
           # Use custom gclient to trim size
           cp engine/scripts/slim-linux-desktop.gclient .gclient
