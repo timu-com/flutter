@@ -5,6 +5,9 @@ on:
     branches: [ "main", "engine-builds" ]
   pull_request:
     branches: [ "main", "engine-builds" ]
+env:
+  # don't try to install google's internal copy of visual studio
+  DEPOT_TOOLS_WIN_TOOLCHAIN: 0
 
 jobs:
   build-engine:
