@@ -18,6 +18,7 @@ solutions = [
         "download_android_deps": False,
         "download_esbuild": True,
         "download_fuchsia_deps": False,
+        "download_emsdk": True,
     }
   },
 ]
