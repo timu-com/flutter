@@ -9,7 +9,7 @@ on:
 jobs:
   build-engine:
     # We'll run on whatever OS the matrix entry specifies.
-    runs-on: ${{ matrix.build.os }}
+    runs-on: ${{ matrix.os }}
 
     strategy:
       matrix:
