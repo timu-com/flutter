@@ -81,8 +81,8 @@ jobs:
 
       - name: Gclient Sync
         run: |
-          # Example: place your .gclient or standard.gclient
-          cp engine/scripts/standard.gclient .gclient
+          # Use custom gclient to trim size
+          cp engine/scripts/slim.gclient .gclient
           gclient sync -D
 
       - name: Fetch engine dependencies
