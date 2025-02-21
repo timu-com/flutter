@@ -30,6 +30,14 @@ jobs:
             config_name: wasm_release
             os: ubuntu-latest
 
+          - name: Linux host debug
+            config_name: host_debug
+            os: ubuntu-latest
+
+          - name: Linux wasm debug (web)
+            config_name: wasm_debug
+            os: ubuntu-latest
+
          # ------------------------- MAC BUILDS -------------------------
           - name: Mac host release
             config_name: host_release
@@ -39,6 +47,13 @@ jobs:
             config_name: ios_release
             os: macos-latest
 
+          - name: Mac host debug
+            config_name: host_debug
+            os: macos-latest
+
+          - name: iOS debug
+            config_name: ios_debug
+            os: macos-latest
           # ------------------------- WINDOWS BUILDS -------------------------
 
           # Engine tool doesn't currently support windows
