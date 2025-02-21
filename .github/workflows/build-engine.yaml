@@ -33,9 +33,9 @@ jobs:
             os: macos-latest
           # ------------------------- WINDOWS BUILDS -------------------------
 
-          #- name: Windows host release
-          #  config_name: host_release
-          #  os: windows-latest
+          - name: Windows host release
+            config_name: host_release
+            os: windows-latest
 
     steps:
       - name: Free disk space
@@ -72,7 +72,7 @@ jobs:
       - name: Install Dependencies (Example for Windows)
         if: startsWith(matrix.os, 'windows')
         run: |
-          choco install -y \
+          choco install -y -v \
             cmake \
             ninja \
             python3
