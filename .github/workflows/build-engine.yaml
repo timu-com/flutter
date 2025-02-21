@@ -10,7 +10,9 @@ jobs:
   build-engine:
     # We'll run on whatever OS the matrix entry specifies.
     runs-on: ${{ matrix.os }}
-
+    defaults:
+      run:
+        shell: bash
     strategy:
       matrix:
         include:
@@ -83,6 +85,8 @@ jobs:
             cmake \
             ninja \
             python3
+
+
 
       - name: Set up depot_tools / gclient
         run: |
