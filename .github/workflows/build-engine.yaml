@@ -34,6 +34,11 @@ jobs:
           - name: Mac host release
             config_name: host_release
             os: macos-latest
+
+          - name: Mac host release
+            config_name: ios_release
+            os: macos-latest
+
           # ------------------------- WINDOWS BUILDS -------------------------
 
           # Engine tool doesn't currently support windows
