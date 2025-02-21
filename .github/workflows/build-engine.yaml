@@ -35,7 +35,7 @@ jobs:
             config_name: host_release
             os: macos-latest
 
-          - name: Mac host release
+          - name: iOS release
             config_name: ios_release
             os: macos-latest
 
