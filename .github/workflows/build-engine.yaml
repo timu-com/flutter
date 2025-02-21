@@ -35,7 +35,7 @@ jobs:
             os: ubuntu-latest
 
           - name: Linux wasm debug (web)
-            config_name: wasm_debug
+            config_name: wasm_debug_unopt
             os: ubuntu-latest
 
          # ------------------------- MAC BUILDS -------------------------
