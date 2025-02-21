@@ -27,10 +27,6 @@ jobs:
             config_name: wasm_release
             os: ubuntu-latest
 
-          - name: Android release
-            config_name: android_release_arm64
-            os: ubuntu-latest
-
 
     steps:
       - name: Free disk space
