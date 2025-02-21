@@ -36,9 +36,10 @@ jobs:
             os: macos-latest
           # ------------------------- WINDOWS BUILDS -------------------------
 
-          - name: Windows host release
-            config_name: host_release
-            os: windows-latest
+          # Engine tool doesn't currently support windows
+          #- name: Windows host release
+          #  config_name: host_release
+          #  os: windows-latest
 
     steps:
       - name: Free disk space
