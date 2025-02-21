@@ -1,7 +1,6 @@
-name: Build Flutter Engine with Engine Tool
+name: Build Flutter Engine with Engine Tool (Matrix)
 
 on:
-  # Run on push or pull requests, modify to your needs.
   push:
     branches: [ "main", "engine-builds" ]
   pull_request:
@@ -9,20 +8,54 @@ on:
 
 jobs:
   build-engine:
-    runs-on: flutter-linux64-runner
+    # We'll run on whatever OS the matrix entry specifies.
+    runs-on: ${{ matrix.build.os }}
+
+    strategy:
+      matrix:
+        include:
+          # ------------------------- LINUX BUILDS -------------------------
+
+          - name: Linux linux_host_desktop_engine
+            config_name: linux_host_desktop_engine
+            os: ubuntu-latest
+
+          - name: Linux linux_android_aot_engine
+            config_name: linux_android_aot_engine
+            os: ubuntu-latest
+
+          - name: Linux linux_web_engine
+            config_name: linux_web_engine
+            os: ubuntu-latest
+
+
+          # ------------------------- MAC BUILDS -------------------------
+          - name: Mac mac_host_engine
+            config_name: mac_host_engine
+            os: macos-latest
+
+          - name: Mac mac_unopt
+            config_name: mac_unopt
+            os: macos-latest
+
+          - name: Mac mac_ios_engine
+            config_name: mac_ios_engine
+            os: macos-latest
+
+          # ------------------------- WINDOWS BUILDS -------------------------
+
+          - name: Windows windows_host_engine
+            config_name: windows_host_engine
+            os: windows-latest
+
     steps:
-
-      - name: Set Actions Allow Unsecure Commands
-        run: |
-          echo "ACTIONS_ALLOW_UNSECURE_COMMANDS=true" >> $GITHUB_ENV
-
       - name: Check out the repository
         uses: actions/checkout@v3
 
-      - name: Install dependencies
+      - name: Install Dependencies (Example for Linux)
+        if: startsWith(matrix.build.os, 'ubuntu')
         run: |
           sudo apt-get update
-          # Typical dependencies for building the engine on Linux:
           sudo apt-get install --no-install-recommends -y \
             clang \
             cmake \
@@ -34,28 +67,42 @@ jobs:
             libgtk-3-dev \
             libglu-dev
 
-      - name: Gclient sync
+      - name: Install Dependencies (Example for macOS)
+        if: startsWith(matrix.build.os, 'macos')
         run: |
-          sudo apt-get install -y curl python3 python3-pip python3-setuptools git clang cmake ninja-build pkg-config
+          brew update
+          brew install \
+            cmake \
+            ninja \
+            python3
 
-          # Clone depot_tools to get gclient, gn, ninja, etc.
+      - name: Install Dependencies (Example for Windows)
+        if: startsWith(matrix.build.os, 'windows')
+        run: |
+          choco install -y \
+            cmake \
+            ninja \
+            python3
+
+      - name: Set up depot_tools / gclient
+        run: |
           git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git $HOME/depot_tools
           echo "::add-path::$HOME/depot_tools"
+          # If needed, pip install infra or CIPD client, etc.
 
-      - name: Sync dependencies (gclient sync)
+      - name: Gclient Sync
         run: |
+          # Example: place your .gclient or standard.gclient
           cp engine/scripts/standard.gclient .gclient
           gclient sync -D
 
       - name: Fetch engine dependencies
         run: |
-          # If your engine checkout is in `./src`, navigate there first:
           cd engine/src
           ./flutter/bin/et fetch
 
-      - name: Build host_debug engine
+      - name: Build Engine
         run: |
+          echo "Building config: ${{ matrix.build.config_name }}"
           cd engine/src
-          # Example: build a host_debug engine for the local OS (Linux x64).
-          ./flutter/bin/et build --config host_debug
-
+          ./flutter/bin/et build --config ${{ matrix.build.config_name }}
