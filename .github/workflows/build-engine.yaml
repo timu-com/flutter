@@ -27,6 +27,15 @@ jobs:
             config_name: wasm_release
             os: ubuntu-latest
 
+         # ------------------------- MAC BUILDS -------------------------
+          - name: Mac host release
+            config_name: host_release
+            os: macos-latest
+          # ------------------------- WINDOWS BUILDS -------------------------
+
+          - name: Windows host release
+            config_name: host_release
+            os: windows-latest
 
     steps:
       - name: Free disk space
