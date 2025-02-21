@@ -31,25 +31,6 @@ jobs:
             os: ubuntu-latest
 
 
-          # ------------------------- MAC BUILDS -------------------------
-          - name: Mac mac_host_engine
-            config_name: mac_host_engine
-            os: macos-latest
-
-          - name: Mac mac_unopt
-            config_name: mac_unopt
-            os: macos-latest
-
-          - name: Mac mac_ios_engine
-            config_name: mac_ios_engine
-            os: macos-latest
-
-          # ------------------------- WINDOWS BUILDS -------------------------
-
-          - name: Windows windows_host_engine
-            config_name: windows_host_engine
-            os: windows-latest
-
     steps:
       - name: Free disk space
         if: startsWith(matrix.build.os, 'ubuntu')
