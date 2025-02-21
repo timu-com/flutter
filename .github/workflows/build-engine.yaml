@@ -45,6 +45,10 @@ jobs:
       - name: Check out the repository
         uses: actions/checkout@v3
 
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
       - name: Install Dependencies (Example for Linux)
         if: startsWith(matrix.os, 'ubuntu')
         run: |
@@ -53,7 +57,6 @@ jobs:
             clang \
             cmake \
             ninja-build \
-            python3 \
             unzip \
             zip \
             xz-utils \
@@ -66,16 +69,14 @@ jobs:
           brew update
           brew install \
             cmake \
-            ninja \
-            python3
+            ninja
 
       - name: Install Dependencies (Example for Windows)
         if: startsWith(matrix.os, 'windows')
         run: |
           choco install -y -v \
             cmake \
-            ninja \
-            python3
+            ninja
 
       - name: Set up depot_tools / gclient
         run: |
